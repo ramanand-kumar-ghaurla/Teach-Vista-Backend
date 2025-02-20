@@ -4,6 +4,9 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 dotenv.config();
 import bodyParser from "body-parser";
+import {clerkMiddleware,requireAuth} from '@clerk/express'
+
+import clerkWebhookRoute from './routes/auth/clerkAuthRoute.js'
 
 
 
@@ -13,6 +16,10 @@ app.use(cors({
     origin:process.env.CORS_ORIGIN,
     credentials:true
 }))
+
+app.use(clerkMiddleware({
+   publishableKey:process.env.CLERK_PUBLIC_KEY,
+   secretKey:process.env.CLERK_SECRET_KEY}))
 
 
 app.use(express.json(
@@ -31,6 +38,10 @@ app.use(express.urlencoded({
     extended:true,
 }))
 app.use(express.static("public"))
+
+// define the routes 
+
+app.use('/api/v1/webhook',clerkWebhookRoute)
 
 
 

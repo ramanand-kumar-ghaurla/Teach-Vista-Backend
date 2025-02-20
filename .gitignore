@@ -121,6 +121,6 @@ add ssh key
 ramanand-kumar-ghaurla.pub
 .pnp.*
 .serverless.yml
-.env
+.env    
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node
