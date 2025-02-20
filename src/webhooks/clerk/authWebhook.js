@@ -1,8 +1,7 @@
-import { Webhook } from "svix";
-import bodyParser from 'body-parser' 
+import { Webhook } from "svix"; 
 import { configDotenv } from "dotenv";
 import { User } from "../../models/user.model.js";
-import {clerkClient ,getAuth} from '@clerk/express'
+import {clerkClient } from '@clerk/express'
 configDotenv()
 
 const userCreateWebhook = async(req, res) => {
@@ -76,10 +75,6 @@ const userCreateWebhook = async(req, res) => {
                                 
                         }
 
-                               
-                
-
-               
         
         res.status(200).json({
             success: true,

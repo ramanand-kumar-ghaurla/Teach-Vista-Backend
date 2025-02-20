@@ -26,10 +26,13 @@ const userSchema = new Schema({
     role:{
         type:String,
         required:true,
-        enum:['User','Teacher','Admin','Student']
+        enum:['Teacher','Admin','Student'],
+        
     }
 },{
-    timestamps:true
+    timestamps:true,
+    discriminatorKey:'role',
+    collection:'users'
 })
 
 export const User = model('User',userSchema)
