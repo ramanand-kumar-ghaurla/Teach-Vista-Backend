@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import {clerkMiddleware,requireAuth} from '@clerk/express'
 
 import clerkWebhookRoute from './routes/auth/clerkAuthRoute.js'
+import userRoute from './routes/auth/user.route.js'
 
 
 
@@ -37,12 +38,23 @@ app.use(express.urlencoded({
     limit:"20kb",
     extended:true,
 }))
-app.use(express.static("public"))
+
+
+
+app.get('/', (req, res) => {
+    res.send("Welcome to TeachVista Backend API!");
+});
+
+app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.url}`);
+    next();
+});
 
 // define the routes 
 
 app.use('/api/v1/webhook',clerkWebhookRoute)
+app.use('/api/v1/user',userRoute)
 
-
+app.use(express.static("public"))
 
 export {app};

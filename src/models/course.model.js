@@ -23,6 +23,7 @@ const courseSchema = new Schema({
     thumbnailURL:{
         type:string
     },
+    
     lectures:[
         {
             type:Schema.Types.ObjectId

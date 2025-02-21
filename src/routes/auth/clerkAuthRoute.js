@@ -6,7 +6,7 @@ import express from 'express'
 
 
 const router = Router()
-router.use(bodyParser.json());
+
 router.use(express.urlencoded({
     limit:"20kb",
     extended:true,

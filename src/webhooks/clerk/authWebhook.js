@@ -17,11 +17,13 @@ const userCreateWebhook = async(req, res) => {
         const evtType = evt.type;
 
         if (evtType === 'user.created') {
+           
             await clerkClient.users.updateUserMetadata(evt?.data?.id,{
                 publicMetadata:{
-                    role:'User'
+                    role:'Student'
                 }
             })
+            
             const user = await User.create({
                 clerkId:evt?.data?.id ,
                 firstName: evt?.data?.first_name,
@@ -29,11 +31,14 @@ const userCreateWebhook = async(req, res) => {
                 email: evt?.data?.email_addresses[0]?.email_address,
                 role : evt?.data?.public_metadata?.role ,
             })
-            console.log('database user in create',user)
+
+          
+           
                 }
 
                 if (evtType === 'user.updated') {
-
+                    
+                    
                     const clerkId = evt.data.id
 
                     if(!clerkId){
@@ -43,7 +48,7 @@ const userCreateWebhook = async(req, res) => {
                   
                     const {first_name,last_name,public_metadata} = evt.data
 
-                    if(!(first_name || last_name || public_metadata)){
+                    if(!first_name || !last_name || !public_metadata){
                         throw new Error('all fields are require')
                     }
 
@@ -51,9 +56,11 @@ const userCreateWebhook = async(req, res) => {
                         $set:{
                             firstName:first_name,
                             lastName:last_name,
-                            role:public_metadata?.role
-                        }
-                    },{new:true})
+                            role:role || 'Student'
+                            }
+                    },{new:true, overwriteDiscriminatorKey:true})
+
+                    
 
                         }
 
@@ -68,10 +75,10 @@ const userCreateWebhook = async(req, res) => {
                           
                           
                            const user = await User.findOne({clerkId:clerkId})
-                           console.log(' user response in delet evt',user)
+                          
                                 
                            const response = await User.findOneAndDelete({clerkId:clerkId})
-                           console.log('deleted user response delete',response)
+                           
                                 
                         }
 
