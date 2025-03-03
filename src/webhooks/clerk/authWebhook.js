@@ -52,15 +52,16 @@ const userCreateWebhook = async(req, res) => {
                         throw new Error('all fields are require')
                     }
 
+                    
                     const user = await User.findOneAndUpdate({clerkId:clerkId},{
                         $set:{
                             firstName:first_name,
                             lastName:last_name,
-                            role:role || 'Student'
+                            role:public_metadata?.role || 'Student'
                             }
                     },{new:true, overwriteDiscriminatorKey:true})
 
-                    
+                   
 
                         }
 

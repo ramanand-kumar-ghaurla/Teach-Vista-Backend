@@ -8,13 +8,21 @@ const teacherSchema = new Schema({
         maxLength:[50,'subject name must be at most 50 characters']
         
     },
-    heading:{
-        type:String
-    },
+   
     experience:{
         type:Number,
         required:true,
         
+    },
+    qualification:{
+        type:String,
+        required:true
+    },
+    skills:{
+        type:String,
+    },
+    heading:{
+        type:String
     },
     createdCourses:[
        {
