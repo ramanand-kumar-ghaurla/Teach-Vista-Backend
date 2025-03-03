@@ -1,7 +1,7 @@
 import {Schema,model} from 'mongoose'
 
 const courseSchema = new Schema({
-    name:{
+    courseName:{
         type:String,
         required:true,
         maxLength:[100,'lecture title must have 100 characters at most']
@@ -24,14 +24,25 @@ const courseSchema = new Schema({
         type: Number,
         required:true
     },
+    catagory:{
+        type:String,
+        required:true
+    },
+    status:{
+        type:String,
+        required:true,
+        enum:['in-progress','compeleted'],
+        default:'in-progress'
+    },
     thumbnailURL:{
-        type:string
+        type:String
     },
    
     
     lectures:[
         {
-            type:Schema.Types.ObjectId
+            type:Schema.Types.ObjectId,
+            ref:'Lecture',
         }
     ]
 

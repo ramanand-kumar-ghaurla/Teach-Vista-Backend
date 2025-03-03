@@ -216,5 +216,7 @@ const teacherApplication = async(req,res)=>{
     }
 }
 
+//  TODO: Remaining logic for getting application to approve teacher (for admin only) and couses (for teacher created and for student all courses or purchased) 
+
 
 export { approveTeacher,teacherApplication };
