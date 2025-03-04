@@ -16,7 +16,7 @@ const lectureSchema = new Schema({
         required:true,
         maxLength:[500,'lecture title must have 500 characters at most']
     },
-    course:{
+    courseId:{
         type: Schema.Types.ObjectId,
         ref: 'Course',
         required:true
