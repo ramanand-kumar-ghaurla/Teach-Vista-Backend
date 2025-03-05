@@ -9,6 +9,7 @@ import {clerkMiddleware,requireAuth} from '@clerk/express'
 import clerkWebhookRoute from './routes/auth/clerkAuthRoute.js'
 import userRoute from './routes/auth/user.route.js'
 import courseRoute from './routes/course.route.js'
+import lectureRoute from './routes/lecture.route.js'
 
 
 
@@ -56,6 +57,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/webhook',clerkWebhookRoute)
 app.use('/api/v1/user',userRoute)
 app.use('/api/v1/course',courseRoute)
+app.use('/api/v1/lecture',lectureRoute)
 
 app.use(express.static("public"))
 

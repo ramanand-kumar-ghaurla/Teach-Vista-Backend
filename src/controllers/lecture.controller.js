@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk'
 import { configDotenv } from 'dotenv'
-import { S3, S3Client,
+import { S3Client,
     CreateMultipartUploadCommand,
     CompleteMultipartUploadCommand,
     UploadPartCommand , 
@@ -57,8 +57,7 @@ async function  initiateMultipart( req,res){
 
     const response = await s3Client.send(initiateMultipartCommand)
 
-    console.log('response of initiateMultipart', response)
-
+   
    return  res.status(200).json({
         sucess:true,
         uploadId:response.UploadId
@@ -79,7 +78,9 @@ async function  initiateMultipart( req,res){
 
  const getPresignedURL = async(req,res)=>{
 
-    const {courseId,title,uploadId,partNo} = req.body
+    const {courseId,title,uploadId,partNo} = req.query
+
+   
 
     if(!courseId || !title || !uploadId || !partNo){
         return res.status(400).json({
@@ -105,7 +106,6 @@ async function  initiateMultipart( req,res){
         signingRegion:process.env.AWS_REGION
        })
     
-       console.log('presigned url for put obj',presignedURL)
 
       return  res.status(200).json({
         sucess:true,
@@ -126,6 +126,13 @@ async function  initiateMultipart( req,res){
 const compeleteMultipartUpload = async(req,res)=>{
 
     const { uploadId, parts, title, courseId} = req.body
+
+    console.log({
+        uploadId,
+        parts,
+        title,
+        courseId
+    })
 
     if(!courseId || !title || !uploadId || !parts){
         return res.status(400).json({
@@ -148,6 +155,8 @@ const compeleteMultipartUpload = async(req,res)=>{
  
      const response = await s3Client.send(compeleteUploadCommand)
 
+    
+
      return res.status(200).json({
         success:true,
         response,
@@ -163,7 +172,7 @@ const compeleteMultipartUpload = async(req,res)=>{
      })
    }
 
-}
+} 
 
 export {
     initiateMultipart,
