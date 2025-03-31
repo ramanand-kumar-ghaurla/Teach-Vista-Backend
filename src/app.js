@@ -15,10 +15,7 @@ import lectureRoute from './routes/lecture.route.js'
 
 const app = express()
 
-app.use(cors({
-    origin:process.env.CORS_ORIGIN,
-    credentials:true
-}))
+
 
 app.use(clerkMiddleware({
    publishableKey:process.env.CLERK_PUBLIC_KEY,

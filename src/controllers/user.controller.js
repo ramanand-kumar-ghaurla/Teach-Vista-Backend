@@ -2,6 +2,8 @@ import { clerkClient, getAuth } from '@clerk/express';
 import { Teacher } from '../models/teacher.model.js';
 import { User } from '../models/user.model.js';
 import { TeacherApplication } from '../models/teacherApplication.js';
+import { verifyUser } from '../utils/verifyUser.js';
+
 
 //  Admin only logics
 
@@ -216,7 +218,86 @@ const teacherApplication = async(req,res)=>{
     }
 }
 
+const getApprovelApplication = async(req,res)=>{
+
+   try {
+     const {userId} = req.body
+ 
+     const user = await verifyUser(userId)
+ 
+     if(user.role !== 'Admin'){
+         return res.status(400).json({
+             success:false,
+             message:'You have no permission to perform this task'
+         })
+     }
+ 
+     const applications = await TeacherApplication.find({status:'Pending'})
+ 
+     console.log('application for approvel',applications)
+ 
+   return  res.status(200).json({
+         success:true,
+         applications,
+         message:'Application for Teacher Approvel fetched successfully'
+     })
+   } catch (error) {
+    return res.status(500).json({
+        success:false,
+        message:'Error in fetching appication '
+    })
+   }
+}
+
+const getApprovelApplicationByID = async(req,res)=>{
+try {
+    const {userId,applicationId} = req.body
+ 
+
+    if(!applicationId){
+        return res.status(400).json({
+            success:false,
+            message:'Application Id is required for get individual Application'
+        })
+    }
+     const user = await verifyUser(userId)
+ 
+     if(user.role !== 'Admin'){
+         return res.status(400).json({
+             success:false,
+             message:'You have no permission to perform this task'
+         })
+     }
+
+     const application = await TeacherApplication.findById({applicationId})
+
+     if(!application ){
+        return res.status(404).json({
+            success:false,
+            message:'No application found associated with this applicationId'
+        })
+     }
+
+    return res.status(200).json({
+        success:true,
+        application,
+        message:'Your Application fetched successfully',
+
+     })
+    
+} catch (error) {
+    return res.status(500).json({
+        success:false,
+        message:'Error in fetching Your Application '
+
+     })
+}
+}
 //  TODO: Remaining logic for getting application to approve teacher (for admin only) and couses (for teacher created and for student all courses or purchased) 
 
 
-export { approveTeacher,teacherApplication };
+export { approveTeacher,
+         teacherApplication,
+         getApprovelApplication ,
+         getApprovelApplicationByID
+    };
