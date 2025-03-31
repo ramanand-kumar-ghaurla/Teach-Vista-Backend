@@ -1,6 +1,6 @@
-import { json } from "express";
+import {generateCloudFrontURLFromKey} from '../../utils/cloud/generateUrl.js'
 import { Lecture } from "../../models";
-import { S3Client , GetObjectCommand} from "@aws-sdk/client-s3";
+
 
 
 const verifyContainerRes = async(req , res)=>{
@@ -18,15 +18,7 @@ const verifyContainerRes = async(req , res)=>{
      * 
      */
 
-    const s3Client = new S3Client({
-        region: process.env.AWS_REGION,
-        credentials: {
-            accessKeyId:process.env.AWS_ACCESS_KEY ,
-            secretAccessKey: process.env.AWS_SECRET_KEY
-        }
-    })
-
-   
+ 
    try {
      const { key , success } = req.body
  
@@ -37,8 +29,16 @@ const verifyContainerRes = async(req , res)=>{
  
      // generate a cloudfront url from key
      
+     const {lectureCloudfrontURL} = generateCloudFrontURLFromKey(key)
    
+     console.log('cloudfront url of transcoded lecture',lectureCloudfrontURL)
 
+     if(!lectureCloudfrontURL){
+        throw new Error('cloudfront url of lecture is required to save in db')
+     }
+
+
+     const response  = await Lecture.fi
    } catch (error) {
     
     console.log('error in verifying container response',error)

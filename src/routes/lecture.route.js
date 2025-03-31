@@ -1,8 +1,5 @@
 import { Router } from "express";
-import {compeleteMultipartUpload,
-        getPresignedURL,
-        initiateMultipart
-} from '../controllers/lecture.controller.js'
+import {compeleteMultipartUpload,getPresignedURL,initiateMultipart} from '../utils/cloud/uploadLectureOnS3.js'
 
 const router = Router()
 

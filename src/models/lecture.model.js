@@ -21,6 +21,12 @@ const lectureSchema = new Schema({
         ref: 'Course',
         required:true
     },
+    lectureStatus :{
+        type:String,
+        required:true,
+        enum:['trancoding','transcoded'],
+        default:'trancoding'
+    },
     videoURL:{
         type:String,
         

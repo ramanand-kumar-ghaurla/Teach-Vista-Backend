@@ -2,7 +2,7 @@ import { configDotenv } from "dotenv"
 
 configDotenv()
 
-export const generateCloudFrontURLFromKey = async(key)=>{
+export const generateCloudFrontURLFromKey = (key)=>{
     try {
 
         if(!key){
@@ -14,7 +14,7 @@ export const generateCloudFrontURLFromKey = async(key)=>{
 
         const lectureCloudfrontURL = ` ${cloudfrontDomain}/${key}`
 
-        return lectureCloudfrontURL
+        return {lectureCloudfrontURL}
     } catch (error) {
         
         throw new Error(" error in generating cloudfront url of transcoded lecture video");
