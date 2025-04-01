@@ -1,5 +1,8 @@
-import {generateCloudFrontURLFromKey} from '../../utils/cloud/generateUrl.js'
+import {generateCloudFrontURLFromKey,deleteFileFromS3} from '../../utils/index.js'
 import { Lecture } from "../../models";
+import { configDotenv } from 'dotenv';
+
+configDotenv()
 
 
 
@@ -21,28 +24,67 @@ const verifyContainerRes = async(req , res)=>{
  
    try {
      const { key , success } = req.body
+
+     const StrKey=String(key)
+     console.log('key in webhook req in main application',{
+      key, success
+     })
  
      if(!key || !success ){
          throw new Error(" key and response status is required for verification");
          
      }
- 
-     // generate a cloudfront url from key
-     
-     const {lectureCloudfrontURL} = generateCloudFrontURLFromKey(key)
-   
-     console.log('cloudfront url of transcoded lecture',lectureCloudfrontURL)
 
-     if(!lectureCloudfrontURL){
+     //validate on basis of success or status code
+ 
+     if (success === true) {
+      const {lectureCloudfrontURL} = generateCloudFrontURLFromKey(key)
+   
+      console.log('cloudfront url of transcoded lecture',lectureCloudfrontURL)
+      
+      if(!lectureCloudfrontURL){
         throw new Error('cloudfront url of lecture is required to save in db')
      }
 
+    const objKeyArray= StrKey.split('/')
 
-     const response  = await Lecture.fi
+    const lectureID = objKeyArray[1]
+
+    if(!lectureID){
+      throw new Error(" lecture id is missing in verifyng webhook");
+      
+    }
+
+    console.log('lecture Id in split method in verify webhook',lectureID)
+
+    const updatedLecture = await Lecture.findByIdAndUpdate(lectureID,{
+      $set:{videoURL:lectureCloudfrontURL,lectureStatus:transcoded},
+    },{ new:true})
+
+    if(!updatedLecture){
+      throw new Error("no lecture found with this lecture id");
+      
+    }
+
+    console.log('updated lecture with url ',updatedLecture)
+
+    // send email to teacer with lecture url for review
+   
+     } else{
+      // send email teacher for failure of video transcoding and upload again
+     }
+   
+     return res.status(200).json({
+      success:true,
+      message:'webhook request recieved and processed successfully'
+     })
+     
+    
    } catch (error) {
     
     console.log('error in verifying container response',error)
    throw new Error('error in verifying container message')
+   
    }
 
    

@@ -56,7 +56,7 @@ try {
             teacher:user._id,
             lectureStatus:'trancoding'
          })
-    
+
          console.log(' newly lecture created by teacher',lecture)
     
          return res.status(200).json({

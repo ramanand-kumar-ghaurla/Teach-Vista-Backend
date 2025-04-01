@@ -37,7 +37,7 @@ configDotenv()
             })
         }
     
-        const objKey = `${courseId}/${title}.mp4`
+        const objKey = `${courseId}/${lectureId}.mp4`
     
       
     
