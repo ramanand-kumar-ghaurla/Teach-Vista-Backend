@@ -16,7 +16,7 @@ try {
     
         const { title, courseId, userId, description} = req.body
     
-        if(!title || !courseId || !userId || description){
+        if(!title || !courseId || !userId ||!description){
             return res.status(400).json({
                 message:'all fields are required to move further'
             })
@@ -25,7 +25,7 @@ try {
         const user = await verifyUser(userId)
     
         if(!user){
-           res.status(404).json({
+          return res.status(404).json({
             message:' no user found with this user id'
            })
             
@@ -34,15 +34,15 @@ try {
          const course = await Course.findById(courseId)
     
          if(!course){
-            res.status(404).json({
-             message:' no user found with this user id'
+          return  res.status(404).json({
+             message:' no course  found with this courseId id'
             })
              
           }
     
          if(user.role !== 'Teacher' && user._id !== course.teacher){
             if(!user){
-                res.status(400).json({
+               return res.status(400).json({
                  message:' You are not eligible to upload lecture '
                 })
                  

@@ -1,5 +1,5 @@
 import {generateCloudFrontURLFromKey,deleteFileFromS3} from '../../utils/index.js'
-import { Lecture } from "../../models";
+import { Lecture } from '../../models/lecture.model.js';
 import { configDotenv } from 'dotenv';
 
 configDotenv()
@@ -23,21 +23,22 @@ const verifyContainerRes = async(req , res)=>{
 
  
    try {
-     const { key , success } = req.body
+     const { key , statusCode } = req.body
 
      const StrKey=String(key)
+     
      console.log('key in webhook req in main application',{
-      key, success
+      key, statusCode
      })
  
-     if(!key || !success ){
-         throw new Error(" key and response status is required for verification");
+     if(!key || !statusCode ){
+         throw new Error(" key and success value is required for verification");
          
      }
 
      //validate on basis of success or status code
  
-     if (success === true) {
+     if (statusCode === 200) {
       const {lectureCloudfrontURL} = generateCloudFrontURLFromKey(key)
    
       console.log('cloudfront url of transcoded lecture',lectureCloudfrontURL)
@@ -58,7 +59,7 @@ const verifyContainerRes = async(req , res)=>{
     console.log('lecture Id in split method in verify webhook',lectureID)
 
     const updatedLecture = await Lecture.findByIdAndUpdate(lectureID,{
-      $set:{videoURL:lectureCloudfrontURL,lectureStatus:transcoded},
+      $set:{videoURL:lectureCloudfrontURL,lectureStatus:'transcoded'},
     },{ new:true})
 
     if(!updatedLecture){
@@ -68,16 +69,22 @@ const verifyContainerRes = async(req , res)=>{
 
     console.log('updated lecture with url ',updatedLecture)
 
+    return res.status(200).json({
+      success:true,
+      message:'webhook request recieved and processed successfully'
+     })
+
     // send email to teacer with lecture url for review
    
      } else{
       // send email teacher for failure of video transcoding and upload again
+      return res.status(500).json({
+        success:false,
+        message:'error in video transcoding please upload the lecture again '
+       })
      }
    
-     return res.status(200).json({
-      success:true,
-      message:'webhook request recieved and processed successfully'
-     })
+    
      
     
    } catch (error) {

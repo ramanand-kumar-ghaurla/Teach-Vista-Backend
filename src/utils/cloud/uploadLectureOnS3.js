@@ -28,9 +28,9 @@ configDotenv()
 
     async function  initiateMultipart( req,res){
     
-        const {title,courseId} = req.body
+        const {lectureId,courseId} = req.body
     
-        if(!courseId || !title ){
+        if(!courseId || !lectureId ){
             return res.status(400).json({
                 sucess:false,
                 message:'all fields are required'
@@ -73,18 +73,18 @@ configDotenv()
 
     const getPresignedURL = async(req,res)=>{
     
-        const {courseId,title,uploadId,partNo} = req.query
+        const {courseId,lectureId,uploadId,partNo} = req.query
     
        
     
-        if(!courseId || !title || !uploadId || !partNo){
+        if(!courseId || !lectureId || !uploadId || !partNo){
             return res.status(400).json({
                 sucess:false,
                 message:'all fields are required'
             })
         }
     
-        const objKey = `${courseId}/${title}.mp4`
+        const objKey = `${courseId}/${lectureId}.mp4`
     
      try {
         
@@ -120,23 +120,23 @@ configDotenv()
 
     const compeleteMultipartUpload = async(req,res)=>{
     
-        const { uploadId, parts, title, courseId} = req.body
+        const { uploadId, parts, lectureId, courseId} = req.body
     
         console.log({
             uploadId,
             parts,
-            title,
+            lectureId,
             courseId
         })
     
-        if(!courseId || !title || !uploadId || !parts){
+        if(!courseId || !lectureId || !uploadId || !parts){
             return res.status(400).json({
                 sucess:false,
                 message:'all fields are required'
             })
         }
     
-        const objKey = `${courseId}/${title}.mp4`
+        const objKey = `${courseId}/${lectureId}.mp4`
     
        try {
          const compeleteUploadCommand = new CompleteMultipartUploadCommand({
