@@ -1,5 +1,6 @@
 import { clerkClient,getAuth } from "@clerk/express";
 import { User, Course, Teacher } from "../models/index.js";
+import { createEmptyFolderWithCourseID } from "../utils/cloud/uploadLectureOnS3.js";
 
 
 const createCourse = async(req,res) => {
@@ -10,7 +11,7 @@ const createCourse = async(req,res) => {
          * 1. recieve all imp properties from req body and check auth
          * 2. check the role of loggendin user for Teacher
          * 3. varify the course catagory and teacher subject
-         * 
+         * 4. create a empty folder with course Id
          * 
          */
 
@@ -69,6 +70,17 @@ const createCourse = async(req,res) => {
         })
 
         console.log('newly created course',course)
+    const updatedTeacher=   await Teacher.findByIdAndUpdate(course.teacher,{
+        $push:{ createdCourses : course._id}
+       },{ new:true
+
+       })
+
+       console.log('added couse teacher',updatedTeacher)
+        
+
+        await createEmptyFolderWithCourseID(course._id)
+
 
         return res.status(200).json({
             success: true,

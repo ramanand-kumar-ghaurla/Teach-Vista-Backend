@@ -3,6 +3,8 @@ import { Teacher } from '../models/teacher.model.js';
 import { User } from '../models/user.model.js';
 import { TeacherApplication } from '../models/teacherApplication.js';
 import { verifyUser } from '../utils/verifyUser.js';
+import { generateCloudfrontCookieForCourse } from '../utils/cloud/generateCookie.js';
+
 
 
 //  Admin only logics
@@ -293,11 +295,52 @@ try {
      })
 }
 }
+
+const getCloudFrontCookies = async(req,res)=>{
+
+   try {
+     const { userId , courseId} = req.body
+     // the userid in req.body is the clerk id which is come from frontend when user login 
+ 
+     if(!courseId || !userId){
+         return res.status(401).json({
+             success:false,
+             message:'userId and userId is required for get cookies'
+         })
+ 
+     }
+ 
+     const user = await verifyUser(userId)
+ 
+    const {cloudfrontCookie}= await generateCloudfrontCookieForCourse(courseId,user._id)
+
+   const cookieOptions={
+        secure:true,
+        httpOnly:true 
+   }
+    return res.status(200)
+    .cookie('CloudFront-Policy',cloudfrontCookie['CloudFront-Policy'],cookieOptions)
+    .cookie('CloudFront-Signature',cloudfrontCookie['CloudFront-Signature'],cookieOptions) 
+    .cookie('CloudFront-Key-Pair-Id',cloudfrontCookie['CloudFront-Key-Pair-Id'],cookieOptions)
+    .json({
+        success:true,
+        message:'cloudfront cookie is generated successfully generated for course'
+    })
+   } catch (error) {
+    console.log('error in getting cloudfront cookie for course',error)
+    return res.status(500).json({
+        success:false,
+        message:'error in getting cloudfront cookie'
+    })
+   }
+
+}
 //  TODO: Remaining logic for getting application to approve teacher (for admin only) and couses (for teacher created and for student all courses or purchased) 
 
 
 export { approveTeacher,
          teacherApplication,
          getApprovelApplication ,
-         getApprovelApplicationByID
+         getApprovelApplicationByID,
+         getCloudFrontCookies
     };

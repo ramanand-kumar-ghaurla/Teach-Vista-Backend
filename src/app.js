@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 import bodyParser from "body-parser";
 import {clerkMiddleware,requireAuth} from '@clerk/express'
-
+import cookieParser from "cookie-parser";
 import clerkWebhookRoute from './routes/auth/clerkAuthRoute.js'
 import userRoute from './routes/auth/user.route.js'
 import courseRoute from './routes/course.route.js'
@@ -16,7 +16,7 @@ import lectureRoute from './routes/lecture.route.js'
 const app = express()
 
 
-
+app.use(cookieParser())
 app.use(clerkMiddleware({
    publishableKey:process.env.CLERK_PUBLIC_KEY,
    secretKey:process.env.CLERK_SECRET_KEY}))

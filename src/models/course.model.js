@@ -24,6 +24,11 @@ const courseSchema = new Schema({
         type: Number,
         required:true
     },
+    validity:{
+        type:Number,
+        required:true,
+        default:365
+    },
     catagory:{
         type:String,
         required:true
@@ -46,6 +51,6 @@ const courseSchema = new Schema({
         }
     ]
 
-})
+},{timestamps:true})
 
 export const Course = model('Course',courseSchema)

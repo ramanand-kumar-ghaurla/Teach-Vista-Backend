@@ -28,6 +28,16 @@ const orderSchema = new Schema({
       enum: ["pending", "completed", "failed"],
       default: "pending",
     },
+    purchasedAt:{
+        type:Date,
+        default:Date.now,
+
+    },
+    validTill:{
+        type:Date,
+        required:true,
+        
+    }
 
 },
 {timestamps: true})

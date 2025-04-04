@@ -58,6 +58,12 @@ try {
          })
 
          console.log(' newly lecture created by teacher',lecture)
+
+          
+            const updatedCourse=   await  course.updateOne({
+          $push:{ lectures: lecture._id}
+         },{ new:true})
+                console.log('added lecture in course',updatedCourse)
     
          return res.status(200).json({
             success:true,

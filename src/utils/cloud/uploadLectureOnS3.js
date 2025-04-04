@@ -1,7 +1,8 @@
 import { S3Client,
     CreateMultipartUploadCommand,
     CompleteMultipartUploadCommand,
-    UploadPartCommand , 
+    UploadPartCommand, 
+    PutObjectCommand, 
 
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
@@ -169,8 +170,30 @@ configDotenv()
     
     } 
 
+    const createEmptyFolderWithCourseID = async( courseId)=>{
+
+       try {
+         const createFolderCommand = new PutObjectCommand({
+             Bucket:process.env.AWS_TRANSCODED_BUCKET ,
+             Key:`${courseId}/.keep`,
+             Body:''
+         })
+ 
+         const response = await s3Client.send(createFolderCommand)
+ 
+         console.log('response of create empty folder',response)
+         
+ 
+       } catch (error) {
+        console.log('error increating empty folder')
+        throw new Error(" error in creating empty forlder on s3");
+        
+       }
+    }
+
     export {
         initiateMultipart,
         getPresignedURL,
-        compeleteMultipartUpload
+        compeleteMultipartUpload,
+        createEmptyFolderWithCourseID
     }
