@@ -25,7 +25,7 @@ const generateCookie = async(courseId)=>{
    try {
      const cloudfront = new AWS.CloudFront.Signer(
          process.env.CLOUDFRONT_KEY_PAIR_ID,
-         process.env.CLOUDFRONT_PRIVATE_KEY
+         process.env.CLOUDFRONT_PRIVATE_KEY.replace(/\\n/g, '\n')
  )
  
  const cloufrontDomain = process.env.CLOUDFRONT_DOMAIN
@@ -71,13 +71,23 @@ export const generateCloudfrontCookieForCourse =  async(courseId,userId,)=>{
           throw new Error(" no user find with this user id");
           
       }
-  
+    
       if(user.role === 'Teacher'){
   
        const course =  await Course.findById(courseId)
-       if(course.teacher === user._id) {
+
+       
   
-          cloudfrontCookie = await  generateCookie(courseId)
+       if(user.createdCourses.length > 0) {
+  
+       if(user.createdCourses.includes(course._id)){
+        console.log('true teacher is owner')
+        cloudfrontCookie = await  generateCookie(courseId)
+       }
+
+          
+       }else{
+        throw new Error('Course access is only for course owner tacher')
        }
   
        
