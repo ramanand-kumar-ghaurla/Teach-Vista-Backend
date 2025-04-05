@@ -314,7 +314,7 @@ const getCloudFrontCookies = async(req,res)=>{
  
     const {cloudfrontCookie}= await generateCloudfrontCookieForCourse(courseId,user._id)
 
-   
+    console.log('cloudfront cookies',cloudfrontCookie)
    const cookieOptions={
         secure:true,
         httpOnly:true 

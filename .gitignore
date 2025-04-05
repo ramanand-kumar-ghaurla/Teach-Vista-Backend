@@ -122,5 +122,6 @@ ramanand-kumar-ghaurla.pub
 .pnp.*
 .serverless.yml
 .env    
+/keys
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Node

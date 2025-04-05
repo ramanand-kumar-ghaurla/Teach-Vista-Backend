@@ -25,17 +25,21 @@ const generateCookie = async(courseId)=>{
    try {
      const cloudfront = new AWS.CloudFront.Signer(
          process.env.CLOUDFRONT_KEY_PAIR_ID,
-         process.env.CLOUDFRONT_PRIVATE_KEY.replace(/\\n/g, '\n')
+         process.env.CLOUDFRONT_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        Math.floor(  Date.now()/1000) + 60*60*24*7
  )
  
  const cloufrontDomain = process.env.CLOUDFRONT_DOMAIN
  
- const expiry = Math.floor(Date.now()/1000) + 60*60*24*7;
+ const expiry = Math.floor(  Date.now()/1000) + 60*60*24*7;
+ console.log('expiry',expiry)
+
+ console.log(`${cloufrontDomain}/${courseId}/`)
  
  const policy = JSON.stringify({
      "Statement": [
          {
-             "Resource": `${cloufrontDomain}/${courseId}/*`,
+             "Resource": `${cloufrontDomain}/${courseId}*`,
              "Condition": {
                  "DateLessThan": {
                      "AWS:EpochTime":expiry
@@ -45,6 +49,7 @@ const generateCookie = async(courseId)=>{
          }
      ]
  })
+
  
  return cloudfront.getSignedCookie({
    policy:policy
