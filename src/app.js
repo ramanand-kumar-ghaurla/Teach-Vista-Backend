@@ -10,6 +10,7 @@ import clerkWebhookRoute from './routes/auth/clerkAuthRoute.js'
 import userRoute from './routes/auth/user.route.js'
 import courseRoute from './routes/course.route.js'
 import lectureRoute from './routes/lecture.route.js'
+import orderRoute from './routes/order.route.js'
 
 
 
@@ -55,6 +56,7 @@ app.use('/api/v1/webhook',clerkWebhookRoute)
 app.use('/api/v1/user',userRoute)
 app.use('/api/v1/course',courseRoute)
 app.use('/api/v1/lecture',lectureRoute)
+app.use('/api/v1/order',orderRoute)
 
 app.use(express.static("public"))
 

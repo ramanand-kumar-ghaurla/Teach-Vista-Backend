@@ -86,7 +86,7 @@ export const generateCloudfrontCookieForCourse =  async(courseId,userId,)=>{
        if(user.createdCourses.length > 0) {
   
        if(user.createdCourses.includes(course._id)){
-        console.log('true teacher is owner')
+       
         cloudfrontCookie = await  generateCookie(courseId)
        }
 
