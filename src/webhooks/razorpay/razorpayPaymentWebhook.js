@@ -1,7 +1,7 @@
 import Razorpay from "razorpay";
-import { validateWebhookSignature,validatePaymentVerification, } from "razorpay/dist/utils/razorpay-utils";
+
 import crypto from 'crypto'
-import { handlePaymentCapture,handlePaymentFaliure } from "../../utils/razorpayPaymentMethods";
+import { handlePaymentCapture,handlePaymentFaliure } from "../../utils/razorpayPaymentMethods.js";
 
 
  export const varifyPayment = async(req,res)=>{
@@ -25,17 +25,25 @@ try {
 
     const event = JSON.parse(body)
 
+    console.log('event of razorpay', event)
+
+    let updatedOrder
     switch (event) {
         case event.event === 'payment.captured':
-            await handlePaymentCapture(event)
+            updatedOrder = await handlePaymentCapture(event)
             break;
         
         case event.event === 'payment.failed':
-            await handlePaymentFaliure(event)
+           updatedOrder= await handlePaymentFaliure(event)
             break;
-        default:
-            break;
+       
     }
+
+    return res.status(200).json({
+        success:true,
+        updatedOrder,
+        message:'webhook processed successfully'
+      })  
 
 } catch (error) {
   return res.status(500).json({

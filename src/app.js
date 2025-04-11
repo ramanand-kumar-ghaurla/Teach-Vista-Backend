@@ -58,7 +58,7 @@ app.use('/api/v1/user',userRoute)
 app.use('/api/v1/course',courseRoute)
 app.use('/api/v1/lecture',lectureRoute)
 app.use('/api/v1/order',orderRoute)
-app.use('/api/v1/webhook/razorpay')
+app.use('/api/v1/webhook/razorpay', razorpayWebhookRoute)
 
 app.use(express.static("public"))
 
