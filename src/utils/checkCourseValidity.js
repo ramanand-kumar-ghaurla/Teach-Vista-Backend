@@ -23,10 +23,10 @@ export const checkCourseVakidity = async(userId,courseId)=>{
       
     }
 
-     const current =new  Date.now()
+     const current = new Date()
 
     let isValid
-    if(current > courseOrder.validTill){
+    if(current <=  courseOrder.validTill){
         isValid = true
     }else{
         isValid=false

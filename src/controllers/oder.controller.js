@@ -2,6 +2,7 @@ import {Order,Course} from '../models/index.js'
 import Razorpay from 'razorpay'
 import { getAuth } from '@clerk/express'
 import {verifyUser} from '../utils/verifyUser.js'
+import { now } from 'mongoose'
 
 const razorpay = new Razorpay({
     key_id:process.env.RAZORPAY_PUBLIC_KEY,
@@ -60,20 +61,20 @@ const createOrder = async(req,res)=>{
 
       // validate student puchased couse within course validity
 
-     const alreadyPurchased =  await Order.findOne({ userId:userId , courseId : courseId})
+     const alreadyPurchased =  await Order.findOne({ userId:user._id , courseId : courseId})
 
-     if (alreadyPurchased && new Date(alreadyPurchased.validTill) > new Date()) {
-        return res.status(400).json({
-            success: false,
-            message: 'You cannot purchase this course again during its active validity period.',
-        });
-    }
+    //  if (alreadyPurchased && new Date(alreadyPurchased.validTill) > new Date()) {
+    //     return res.status(400).json({
+    //         success: false,
+    //         message: 'You cannot purchase this course again during its active validity period.',
+    //     });
+    // }
     
 
      // create razorpay order
 
     const razorpayOrder = await razorpay.orders.create({
-        amount:course.price * 100,
+        amount:1 * 100,
         currency:'INR',
         receipt:`receipt+${Date.now}` ,
         notes:{
@@ -89,9 +90,9 @@ const createOrder = async(req,res)=>{
 
      const DBOrder = await Order.create({
         courseId:courseId,
-        userId: userId,
-        amount: razorpayOrder.amount_paid,
-        purchasedAt: new Date.now,
+        userId: user._id,
+        amount: razorpayOrder.amount,
+        purchasedAt: new Date(Date.now()),
         razorpayOrderId:razorpayOrder.id,
         status:'pending',
         validTill:new Date(Date.now() + course.validity * 24 * 60 * 60 * 1000)

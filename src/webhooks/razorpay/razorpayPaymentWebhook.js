@@ -4,40 +4,49 @@ import crypto from 'crypto'
 import { handlePaymentCapture,handlePaymentFaliure } from "../../utils/razorpayPaymentMethods.js";
 
 
+
  export const varifyPayment = async(req,res)=>{
 try {
+
+  console.log(' webhook calling')
     
     const body = req.body
-    const razorpaySignature = req.headers.get('x-razorpay-signature')
 
+    console.log('webhook body',body)
+    const razorpaySignature = req.headers['x-razorpay-signature'];
+
+  
+  
     // generate a new webhook endpoint with webhook secret
     const expectedSignature = crypto
     .createHmac('sha256',process.env.RAZORPAY_WEBHOOK_SECRET)
-    .update(body)
+    .update(JSON.stringify(body))
     .digest('hex')
 
     if(expectedSignature !== razorpaySignature){
-        return res.status(401).json({
-            success:false,
-            message:'invalid signature'
-        })
+      throw new Error(" invalid razorpay signature");
+      
     }
 
-    const event = JSON.parse(body)
-
-    console.log('event of razorpay', event)
+    
 
     let updatedOrder
-    switch (event) {
-        case event.event === 'payment.captured':
-            updatedOrder = await handlePaymentCapture(event)
-            break;
-        
-        case event.event === 'payment.failed':
-           updatedOrder= await handlePaymentFaliure(event)
-            break;
-       
-    }
+    switch (body.event) { 
+      case 'payment.captured': 
+          updatedOrder = await handlePaymentCapture(body); 
+          break;
+  
+      case 'payment.failed': 
+          updatedOrder = await handlePaymentFaliure(body); 
+          break;
+  
+    
+    
+        }
+
+      
+
+    console.log('updated order',updatedOrder)
 
     return res.status(200).json({
         success:true,
@@ -46,6 +55,8 @@ try {
       })  
 
 } catch (error) {
+
+  console.log('erorr in verifying razorpay payment',error)
   return res.status(500).json({
     success:false,
     message:'error in verifyng razorpay payment webhook'
