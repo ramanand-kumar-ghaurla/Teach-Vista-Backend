@@ -72,7 +72,7 @@ try {
          })
 } catch (error) {
     
-    console.log('error in storing lecture in database')
+    console.log('error in storing lecture in database',error)
     return res.status(500).json({
         success:false,
         message:'An error occured while storin lecture details in database'
