@@ -1,6 +1,7 @@
 import { clerkClient,getAuth } from "@clerk/express";
 import { User, Course, Teacher } from "../models/index.js";
 import { createEmptyFolderWithCourseID } from "../utils/cloud/uploadLectureOnS3.js";
+import {verifyUser} from '../utils/verifyUser.js'
 
 
 const createCourse = async(req,res) => {
@@ -103,23 +104,17 @@ const getCreatedCourse = async(req,res)=>{
     try {
         
         
-        const { clerkId} = req.body
+        const { userId} = req.body 
 
         // const {userId} = getAuth(req.body)
 
-        if(!clerkId){
-            res.status(400).json({
+        if(!userId){
+           return res.status(400).json({
                 message:'unauthorized req'
             })
         }
 
-        const user = await User.findOne({
-            clerkId:clerkId  // || userId
-        })
-
-
-       
-
+      const user = await verifyUser(userId)
         if(user.role !== 'Teacher' ){
 
             return res.status(401).json({
@@ -147,7 +142,52 @@ const getCreatedCourse = async(req,res)=>{
     }
 }
 
+const getCourseById = async(req,res)=>{
+    try {
+        
+        const {courseId} = req.query
+
+        if(!courseId){
+            return res.status(401).json({
+                success:false,
+                message:'course id is required for fething course'
+            })
+        }
+
+        const course = await Course.findById(courseId).populate([{
+            path:'teacher',
+            select:' firstName lastName heading'
+        },
+        {
+            path:'lectures',
+            select:'title description'
+        }
+    ])
+
+        if(!course){
+            return res.status(404).json({
+                success:false,
+                message:'no course found with this course id'
+            })
+        }
+
+        return res.status(200).json({
+            success:false,
+            course,
+            message:'course details fetched successfully'
+        })
+    } catch (error) {
+        console.log('error in fetching detailed course',error)
+
+        return res.status(404).json({
+            success:false,
+            message:'error in fetching detailed course'
+        }) 
+    }
+}
+
 export {
     createCourse,
-    getCreatedCourse
+    getCreatedCourse,
+    getCourseById
 }
