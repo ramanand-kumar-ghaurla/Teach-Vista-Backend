@@ -27,7 +27,8 @@ const userSchema = new Schema({
         type:String,
         enum:['Teacher','Admin','Student'],
         
-    }
+    },
+   
 },{
     timestamps:true,
     discriminatorKey:'role',

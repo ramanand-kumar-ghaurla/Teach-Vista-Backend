@@ -63,12 +63,12 @@ const createOrder = async(req,res)=>{
 
      const alreadyPurchased =  await Order.findOne({ userId:user._id , courseId : courseId})
 
-    //  if (alreadyPurchased && new Date(alreadyPurchased.validTill) > new Date()) {
-    //     return res.status(400).json({
-    //         success: false,
-    //         message: 'You cannot purchase this course again during its active validity period.',
-    //     });
-    // }
+     if (alreadyPurchased && new Date(alreadyPurchased.validTill) > new Date()) {
+        return res.status(400).json({
+            success: false,
+            message: 'You cannot purchase this course again during its active validity period.',
+        });
+    }
     
 
      // create razorpay order
@@ -118,6 +118,8 @@ const createOrder = async(req,res)=>{
          })
     }
 }
+
+
 
 export {
     createOrder
