@@ -24,9 +24,9 @@ const approveTeacher = async (req, res) => {
         const { 
                 subject,
                 experience, 
-                heading, 
                 email,
                 skills,
+                address,
                 qualification
                 } = req.body;
 
@@ -67,9 +67,9 @@ const approveTeacher = async (req, res) => {
 
         
 
-        if (!subject || !experience || !qualification ) {
+        if (!subject || !experience || !qualification || !address) {
             return res.status(400).json({
-                message: "Subject, experience and qualification are required"
+                message: "Subject, experience, address and qualification are required"
             });
         }
 
@@ -93,7 +93,8 @@ const approveTeacher = async (req, res) => {
             experience,
             heading,
             qualification,
-            skills
+            skills,
+            address
         };
 
         // Delete old user and create a new Teacher entry
@@ -142,11 +143,11 @@ const teacherApplication = async(req,res)=>{
      */
 
     try {
-        const { userId, subject, experience, firstName,lastName,email,qualification ,skills} = req.body;
+        const { userId, subject, address, experience, firstName,lastName,email,qualification ,skills} = req.body;
 
        /**TODO: add the condition for Student only and some modification in userid */
 
-       if (!userId || !subject || !experience || !email || !qualification || !firstName || !lastName) {
+       if (!userId || !subject || !experience || !email || !qualification || !firstName || !address || !lastName) {
         return res.status(400).json({
             message: "all fields are required"
         });
@@ -194,7 +195,8 @@ const teacherApplication = async(req,res)=>{
             experience,
             subject,
             qualification,
-            skills
+            skills,
+            address
         })
 
         console.log('response of teacher application',applicationRes)

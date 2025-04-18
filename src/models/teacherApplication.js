@@ -21,7 +21,7 @@ const teacherApplicationFormSchema = new Schema({
         type:String,
         required:true,
         trim:true,
-        unique:true
+        
     },
     subject: {
         type:String,
@@ -43,6 +43,10 @@ const teacherApplicationFormSchema = new Schema({
         required:true,
         enum:['Pending','Approved','Rejected'],
         default:'Pending'
+    },
+    address:{
+        type:String,
+        required:true
     },
     skills:{
         type:String,
