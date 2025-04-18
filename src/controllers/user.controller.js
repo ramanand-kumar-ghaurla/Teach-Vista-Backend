@@ -81,7 +81,7 @@ const approveTeacher = async (req, res) => {
 
         // Update role in Clerk
         await clerkClient.users.updateUserMetadata(user.clerkId, {
-            publicMetadata: { role: 'Teacher' }
+            publicMetadata: { role: 'Teacher' , subject:`${subject}`}
         });
 
         // Convert User to Teacher by creating a new Teacher document
@@ -146,7 +146,7 @@ const teacherApplication = async(req,res)=>{
 
        /**TODO: add the condition for Student only and some modification in userid */
 
-       if (!userId || !subject || !experience || !email || !qualification) {
+       if (!userId || !subject || !experience || !email || !qualification || !firstName || !lastName) {
         return res.status(400).json({
             message: "all fields are required"
         });
