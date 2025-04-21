@@ -32,21 +32,21 @@ const approveTeacher = async (req, res) => {
 
        /**TODO: add the condition for Admin only */
 
-    //    const {userId} = getAuth(req.body)
+       const {userId} = getAuth(req)
 
-    //    if(!userId){
-    //     return res.status(401).json({
-    //         message:'unauthorized request'
-    //     })
-    //    }
+       if(!userId){
+        return res.status(401).json({
+            message:'unauthorized request'
+        })
+       }
 
-    //    const {publicMetadata} = await clerkClient.users.getUser(userId)
+    //  
 
-    //    if(!publicMetadata.role === 'Admin'){
-    //     return res.status(401).json({
-    //         message:'you have no permission to perform this task '
-    //     })
-    //    }
+    const loggedInUser = await verifyUser(userId)
+
+    if(loggedInUser.role !== 'Admin'){
+        return res.status(400).json({ message: " You have no permission to perform this task" });
+    }
 
         if ( !email) {
             return res.status(400).json({ message: " email is mandatory" });
@@ -65,9 +65,7 @@ const approveTeacher = async (req, res) => {
             });
         }
 
-        
-
-        if (!subject || !experience || !qualification || !address) {
+        if (!subject || experience === undefined || !qualification || !address) {
             return res.status(400).json({
                 message: "Subject, experience, address and qualification are required"
             });
@@ -91,7 +89,7 @@ const approveTeacher = async (req, res) => {
             role: 'Teacher',
             subject,
             experience,
-            heading,
+           
             qualification,
             skills,
             address
@@ -143,16 +141,25 @@ const teacherApplication = async(req,res)=>{
      */
 
     try {
-        const { userId, subject, address, experience, firstName,lastName,email,qualification ,skills} = req.body;
+        const {  subject, address, experience, firstName,lastName,email,qualification ,skills} = req.body;
 
+
+        console.log('req from frontend',req.body)
        /**TODO: add the condition for Student only and some modification in userid */
 
-       if (!userId || !subject || !experience || !email || !qualification || !firstName || !address || !lastName) {
+       if ( !subject || experience === undefined || !email || !qualification || !firstName || !address || !lastName) {
         return res.status(400).json({
             message: "all fields are required"
         });
     }
 
+    const {userId} = getAuth(req)
+
+        if(!userId){
+        return res.status(401).json({
+            message:'unauthorized request'
+        })
+        }
         // Find the existing user in the User collection
         let user = await User.findOne({ clerkId: userId });
 
@@ -223,7 +230,7 @@ const teacherApplication = async(req,res)=>{
 const getApprovelApplication = async(req,res)=>{
 
    try {
-     const {userId} = req.body
+     const {userId} = getAuth(req)
  
      const user = await verifyUser(userId)
  
@@ -253,9 +260,9 @@ const getApprovelApplication = async(req,res)=>{
 
 const getApprovelApplicationByID = async(req,res)=>{
 try {
-    const {userId,applicationId} = req.query
+    const {applicationId} = req.query
 
- 
+ const {userId} = getAuth()
 
     if(!applicationId){
         return res.status(400).json({
@@ -302,10 +309,12 @@ try {
 const getCloudFrontCookies = async(req,res)=>{
 
    try {
-     const { userId , courseId} = req.body
+
+    const {userId} = getAuth()
+     const {  courseId} = req.body
      // the userid in req.body is the clerk id which is come from frontend when user login 
  
-     if(!courseId || !userId){
+     if(!courseId ){
          return res.status(401).json({
              success:false,
              message:'userId and userId is required for get cookies'
@@ -343,7 +352,7 @@ const getCloudFrontCookies = async(req,res)=>{
 const getStudentPurchasedCourses = async(req,res)=>{
 
     try {
-        const { userId } = req.body
+        const {userId} = getAuth()
         // the userid in req.body is the clerk id which is come from frontend when user login 
     
         if( !userId){

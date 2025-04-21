@@ -25,9 +25,9 @@ const createOrder = async(req,res)=>{
         
         //use get auth here
 
-        const {courseId,userId} = req.body
+        const {courseId} = req.body
 
-      //  const {userId} = getAuth(req.body)
+       const {userId} = getAuth(req)
 
 
         if(!courseId || !userId) {

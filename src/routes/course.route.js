@@ -4,10 +4,15 @@ import { createCourse , getCreatedCourse,getCourseById} from "../controllers/cou
 
 
 
+// const fakeAuth = (req, res, next) => {
+//     console.log("🧪 Fake auth passed");
+//     req.auth = { userId: "user_2tLeuTWEBa5nuZ8MfyVnYMeAdkN" }; // manually inject for test
+//     next();
+//   };
 const router = Router()
 // TODO: add clerk middleware in these routes
 // for Teacher only routes
-router.route('/create-course').post(createCourse)
+router.route('/create-course').post(requireAuth() ,createCourse)
 router.route('/get-created-course').get(getCreatedCourse)
 
 // public routes 

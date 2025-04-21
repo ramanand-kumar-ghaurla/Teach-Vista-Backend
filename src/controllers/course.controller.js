@@ -16,20 +16,23 @@ const createCourse = async(req,res) => {
          * 
          */
 
-        const { courseName , description, duration, price,catagory,clerkId} = req.body
+        const { courseName , description, duration, price,catagory,validity} = req.body
 
-        // const {userId} = getAuth(req.body)
+        const {userId} = getAuth(req)
 
-        if(!clerkId){
-            res.status(400).json({
-                message:'unauthorized req'
-            })
-        }
+         
+
+        
+        
 
         const user = await User.findOne({
-            clerkId:clerkId  // || userId
+            clerkId:userId  // || userId
         })
 
+        if(validity){
+            Number(validity)
+            
+        }
        
 
         if(!user){
@@ -63,6 +66,7 @@ const createCourse = async(req,res) => {
             courseName,
             teacher:user._id,
             description,
+            validity,
             duration,
             price,
             catagory,
@@ -80,7 +84,7 @@ const createCourse = async(req,res) => {
        console.log('added couse teacher',updatedTeacher)
         
 
-        await createEmptyFolderWithCourseID(course._id)
+       // await createEmptyFolderWithCourseID(course._id)
 
 
         return res.status(200).json({
@@ -104,9 +108,8 @@ const getCreatedCourse = async(req,res)=>{
     try {
         
         
-        const { userId} = req.body 
-
-        // const {userId} = getAuth(req.body)
+        
+         const {userId} = getAuth(req)
 
         if(!userId){
            return res.status(400).json({

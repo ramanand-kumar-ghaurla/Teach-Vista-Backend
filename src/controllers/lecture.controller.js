@@ -16,13 +16,13 @@ try {
     
         const { title, courseId, userId, description} = req.body
     
-        if(!title || !courseId || !userId ||!description){
+        if(!title || !courseId  ||!description){
             return res.status(400).json({
                 message:'all fields are required to move further'
             })
         }
     
-        const user = await verifyUser(userId)
+        const user = await verifyUser(req.auth.userId)
     
         if(!user){
           return res.status(404).json({

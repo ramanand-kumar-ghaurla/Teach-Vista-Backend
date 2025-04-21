@@ -28,6 +28,8 @@ app.use(express.json(
     {limit:"20kb"}
 ))
 
+
+
 app.use(bodyParser.json());
 app.use(cors({
     credentials:true,
@@ -47,7 +49,7 @@ app.get('/', (req, res) => {
 });
 
 app.use((req, res, next) => {
-    console.log(`Incoming request: ${req.method} ${req.url}`);
+    console.log(`Incoming request: ${req.method} ${req.path}`);
     next();
 });
 
