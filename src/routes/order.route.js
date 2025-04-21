@@ -6,6 +6,6 @@ const router = Router()
 
 
 // add require auth for authorization
-router.route('/create-order').post(createOrder)
+router.route('/create-order').post(requireAuth(),createOrder)
 
 export default router

@@ -2,6 +2,7 @@ import { Router } from "express";
 import {compeleteMultipartUpload,getPresignedURL,initiateMultipart} from '../utils/cloud/uploadLectureOnS3.js'
 import {verifyContainerRes} from '../webhooks/videoService/verifyTranscodingRes.js'
 import { createLecture } from "../controllers/lecture.controller.js";
+import { requireAuth } from "@clerk/express";
 
 const router = Router()
 
@@ -17,6 +18,6 @@ router.route('/verify-transcoding-resonse').post( verifyContainerRes)
 
 // route related to lectureStatus
 
-router.route('/create-lecture').post(createLecture)
+router.route('/create-lecture').post(requireAuth(),createLecture)
 
 export default router
