@@ -152,9 +152,68 @@ const getStatusBasisLecture = async(req , res)=>{
    }
    }
 
+
+   const getAllCreatedLecturesBYTeacher = async(req , res)=>{
+      try {
+          
+              /**steps
+               *  destructure imp fields from request
+               *  validate the fields
+               * verify looged in user is teacher and owner of course
+               * if fetch lecture from db according to req
+               * return the res
+               * 
+               */
+          
+              const { userId} = req.query
+            
+              const user = await verifyUser(req.auth.userId || userId)
+          
+              if(!user){
+                return res.status(404).json({
+                  message:' no user found with this user id'
+                 })
+                  
+               }
+          
+          
+               if(user.role !== 'Teacher'){
+                  if(!user){
+                     return res.status(400).json({
+                       message:' You are not eligible to fetch  lecture '
+                      })
+                       
+                    }
+               }
+          
+               const lectures = await Lecture.find({
+                  teacher:user._id
+               }).populate([
+                  {path:'courseId',
+                    select:' courseName catagory description'
+                  }
+               ])
+                      console.log('lecture status',lectures)
+          
+               return res.status(200).json({
+                  success:true,
+                  lecture:lectures,
+                  message:'Lectures fetched successfully created by you till now'
+               })
+      } catch (error) {
+          
+          console.log('error in fetching lectures',error)
+          return res.status(500).json({
+              success:false,
+              message:'An error occured while storin lecture details in database'
+           })
+      }
+      }
+
    
    
 export {
     createLecture,
-    getStatusBasisLecture
+    getStatusBasisLecture,
+    getAllCreatedLecturesBYTeacher
 }
