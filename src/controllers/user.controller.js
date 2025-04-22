@@ -230,9 +230,10 @@ const teacherApplication = async(req,res)=>{
 const getApprovelApplication = async(req,res)=>{
 
    try {
-     const {userId} = getAuth(req)
+    const {status,userId} = req.query
+   
  
-     const user = await verifyUser(userId)
+     const user = await verifyUser(userId||req.auth.userId)
  
      if(user.role !== 'Admin'){
          return res.status(400).json({
@@ -241,7 +242,7 @@ const getApprovelApplication = async(req,res)=>{
          })
      }
  
-     const applications = await TeacherApplication.find({status:'Pending'})
+     const applications = await TeacherApplication.find({status:status})
  
      console.log('application for approvel',applications)
  

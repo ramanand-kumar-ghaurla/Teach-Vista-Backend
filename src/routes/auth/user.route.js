@@ -11,7 +11,7 @@ import { approveTeacher,
 const router = Router()
 // route for admin only
 router.route('/approve-teacher').post(requireAuth(), approveTeacher)
-router.route('/get-approvel-application').get( requireAuth(),getApprovelApplication)
+router.route('/get-Teacher-application').get(requireAuth(), getApprovelApplication)
 router.route('/get-approvel-application-by-id').get(requireAuth(),getApprovelApplicationByID)
 // route for student or teacher
 router.route('/apply-for-teacher').post(requireAuth(), teacherApplication)
